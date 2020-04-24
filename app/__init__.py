@@ -45,7 +45,8 @@ app.config.from_object(DevConfig)
 # Initializing Flask Extensions
 bootstrap = Bootstrap(app)
 
-from app.main import views
 from app.main import error
+from app.main import views
+# from app.main import error
 
   
