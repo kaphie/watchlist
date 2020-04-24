@@ -1,8 +1,8 @@
 from flask import Flask
-from .config import DevConfig
+from config import DevConfig
 from app.instance.config import MOVIE_API_KEY
 from flask_bootstrap import Bootstrap
-from .request import configure_request
+
 
 from config import config_options
 
@@ -25,7 +25,7 @@ def create_app(config_name):
     app.register_blueprint(main_blueprint)
 
     # setting config
-    from .requests import configure_request
+    from .request import configure_request
     configure_request(app)
 
 
@@ -45,7 +45,7 @@ app.config.from_object(DevConfig)
 # Initializing Flask Extensions
 bootstrap = Bootstrap(app)
 
-from app import views
-from app import error
+from app.main import views
+from app.main import error
 
   
