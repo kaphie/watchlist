@@ -1,6 +1,6 @@
 from flask import Flask
 from config import DevConfig
-from app.instance.config import MOVIE_API_KEY
+import os
 from flask_bootstrap import Bootstrap
 
 
@@ -34,7 +34,7 @@ def create_app(config_name):
 
 # Initializing application
 app = Flask(__name__,instance_relative_config = True)
-app.config["MOVIE_API_KEY"]=MOVIE_API_KEY
+app.config["MOVIE_API_KEY"]=os.environ.get("MOVIE_API_KEY")
 #app.config["MOVIE_API_BASE_URL"]=DevConfig.MOVIE_API_BASE_URL
 
 # Setting up configuration
