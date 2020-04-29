@@ -4,7 +4,7 @@ from app import app
 from . import main
 from app.request import get_movies,get_movie,search_movie
 from .forms import ReviewForm,UpdateProfile
-from .. import db
+from .. import db,photos
 from flask import render_template,request,redirect,url_for,abort
 from app.models import Review, User
 from flask import url_for
@@ -25,22 +25,16 @@ from flask_login import login_required
 
 #     return render_template('movie.html',title = title,movie = movie)
     
-@main.route('/user/<uname>/update',methods = ['GET','POST'])
+@main.route('/user/<uname>/update/pic',methods= ['POST'])
 @login_required
-def update_profile(uname):
+def update_pic(uname):
     user = User.query.filter_by(username = uname).first()
-    if user is None:
-        abort(404)
-
-    form = UpdateProfile()
-
-    if form.validate_on_submit():
-        user.bio = form.bio.data
-
-        db.session.add(user)
+    if 'photo' in request.files:
+        filename = photos.save(request.files['photo'])
+        path = f'photos/{filename}'
+        user.profile_pic_path = path
         db.session.commit()
-
-        return redirect(url_for('.profile',uname=user.username))
+    return redirect(url_for('main.profile',uname=uname))
 
     return render_template('profile/update.html',form =form)
 

@@ -6,6 +6,7 @@ from app.models import User
 from app.auth.forms import RegistrationForm
 from app.models import db
 from app.auth.forms import LoginForm,RegistrationForm
+from app.email import mail_message
 
 @auth.route('/login',methods=['GET','POST'])
 def login():
@@ -34,6 +35,9 @@ def register():
         user = User(email = form.email.data, username = form.username.data,password = form.password.data)
         db.session.add(user)
         db.session.commit()
+
+        mail_message("Welcome to watchlist","email/welcome_user",user.email,user=user)
+
         return redirect(url_for('auth.login'))
         title = "New Account"
-    return render_template('auth/register.html',registration_form = form)    
+    return render_template('auth/register.html',registration_form = form)
