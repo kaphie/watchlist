@@ -8,8 +8,8 @@ from .. import db,photos
 from flask import render_template,request,redirect,url_for,abort
 from app.models import Review, User
 from flask import url_for
-from flask_login import login_required
-
+from flask_login import login_required, current_user
+import markdown2 
 
 #Review = review.Review
 
@@ -77,13 +77,16 @@ def search(movie_name):
 def new_review(id):
     form = ReviewForm()
     movie = get_movie(id)
-
     if form.validate_on_submit():
         title = form.title.data
         review = form.review.data
-        new_review = Review(movie.id,title,movie.poster,review)
+
+        # Updated review instance
+        new_review = Review(movie_id=movie.id,movie_title=title,image_path=movie.poster,movie_review=review,user=current_user)
+
+        # save review method
         new_review.save_review()
-        return redirect(url_for('movie',id = movie.id ))
+        return redirect(url_for('.movie',id = movie.id ))
 
     title = f'{movie.title} review'
     return render_template('new_review.html',title = title, review_form=form, movie=movie)
@@ -99,3 +102,11 @@ def movie(id):
     reviews = Review.get_reviews(movie.id)
 
     return render_template('movie.html',title = title,movie = movie,reviews = reviews)
+
+@main.route('/review/<int:id>')
+def single_review(id):
+    review=Review.query.get(id)
+    if review is None:
+        abort(404)
+    format_review = markdown2.markdown(review.movie_review,extras=["code-friendly", "fenced-code-blocks"])
+    return render_template('review.html',review = review,format_review=format_review)

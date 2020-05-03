@@ -7,6 +7,8 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY')
     SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://user:tyrrelhaslay718@localhost/watchlist'
     UPLOADED_PHOTOS_DEST ='app/static/photos'
+    SIMPLEMDE_JS_IIFE = True
+    SIMPLEMDE_USE_CDN = True
 
 #email configurations
     MAIL_SERVER = 'smtp.googlemail.com'
@@ -18,11 +20,18 @@ class Config:
 class ProdConfig(Config):
     pass
 
+class TestConfig(Config):
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://james:password@localhost/watchlist_test'
+
+
 
 class DevConfig(Config):
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://james:password@localhost/watchlist'
     DEBUG = True
 
 config_options = {
 'development':DevConfig,
-'production':ProdConfig
+'production':ProdConfig,
+'test':TestConfig
 }
+
